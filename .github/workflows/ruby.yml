@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [master]
 
-
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
@@ -57,8 +56,6 @@ jobs:
       RESQUE: "${{ matrix.resque-version }}"
       RUFUS_SCHEDULER: "${{ matrix.rufus-scheduler }}"
       COVERAGE: 1
-
-    name: "ruby ${{matrix.ruby-version}}, resque ${{matrix.resque-version}}, rufus-scheduler ${{matrix.rufus-scheduler}}, redis-rb ${{matrix.redis-version}}"
 
     steps:
       - uses: actions/checkout@v4
