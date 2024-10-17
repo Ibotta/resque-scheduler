@@ -146,7 +146,8 @@ default `'text'`)
 `MonoLogger::FATAL`, default `false`)
 * `VERBOSE` - Maximize log verbosity if non-empty (equivalent to a level
 of `MonoLogger::DEBUG`, default `false`)
-
+* `ENABLE_DELAYED_REQUEUE_BATCH` - Enable batched delayed job enqueueing per second (default `false`) - [See section below on consequences](#batched-delayed-job-and-resque-enqueue-hooks)
+* `DELAYED_REQUEUE_BATCH_SIZE` - Set the delayed job batch size if `ENABLE_DELAYED_REQUEUE_BATCH` is enabled (default `100`). If `<= 1`, this disables batching.
 
 ### Resque Pool integration
 
@@ -755,6 +756,21 @@ This table explains the version requirements for rufus-scheduler
 | `~> 4.0`         | `~> 3.0`        |
 | `< 4.0`          | `~> 2.0`        |
 
+##### Batched delayed job and resque enqueue hooks
+
+Batching delayed job enqueueing can speed up when per-second job counts grows,
+avoiding situations that may cause delayed enqueues to fall behind. This batching wraps enqueues in a `multi` pipeline, making far fewer roundtrips to the server.
+
+However, in `redis` gem `>= 4.0`, any operations to redis within the `multi`
+block must use the multi handle so that the actions are captured. Resque's hooks
+do not currently have a way to pass this around, and so compatibility with other
+resque plugins or hooks which access redis at enqueue time is impacted with
+batch mode.
+
+Detecting when this occurs can be tricky, you must watch for logs
+emitted by your `resque-scheduler` process such as `Redis::CommandError: ERR
+MULTI calls can not be nested` or `NoMethodError: undefined method nil? for
+<Redis::Future`, and delayed jobs you expect would not be enqueued.
 
 ### Contributing
 
