@@ -205,7 +205,7 @@ module Resque
       end
 
       def batch_delayed_items?
-        enable_delayed_requeue_batches && delayed_requeue_batch_size > 1
+        !disable_delayed_requeue_batches && delayed_requeue_batch_size > 1
       end
 
       # Enqueues all delayed jobs for a timestamp

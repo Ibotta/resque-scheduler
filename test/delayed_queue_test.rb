@@ -392,17 +392,17 @@ context 'DelayedQueue' do
   end
 
   context "non-batch delayed item queue" do
-    batch_enabled = Resque::Scheduler.enable_delayed_requeue_batches
+    batch_disabled = Resque::Scheduler.disable_delayed_requeue_batches
     batch_size = Resque::Scheduler.delayed_requeue_batch_size
     setup do
       Resque::Scheduler.quiet = true
       Resque.data_store.redis.flushall
-      Resque::Scheduler.enable_delayed_requeue_batches = false
+      Resque::Scheduler.disable_delayed_requeue_batches = true
       Resque::Scheduler.delayed_requeue_batch_size = 1
     end
 
     teardown do
-      Resque::Scheduler.enable_delayed_requeue_batches = batch_enabled
+      Resque::Scheduler.disable_delayed_requeue_batches = batch_disabled
       Resque::Scheduler.delayed_requeue_batch_size = batch_size
     end
 
@@ -422,21 +422,21 @@ context 'DelayedQueue' do
       assert_equal(90, Resque.size(Resque.queue_from_class(SomeIvarJob)))
     end
 
-    # TODO clean up timestamp?
+    # TODO clean up timestamp tests?
   end
 
   context "batch delayed item queue" do
-    batch_enabled = Resque::Scheduler.enable_delayed_requeue_batches
+    batch_disabled = Resque::Scheduler.disable_delayed_requeue_batches
     batch_size = Resque::Scheduler.delayed_requeue_batch_size
     setup do
       Resque::Scheduler.quiet = true
       Resque.data_store.redis.flushall
-      Resque::Scheduler.enable_delayed_requeue_batches = true
+      Resque::Scheduler.disable_delayed_requeue_batches = false
       Resque::Scheduler.delayed_requeue_batch_size = 100
     end
 
     teardown do
-      Resque::Scheduler.enable_delayed_requeue_batches = batch_enabled
+      Resque::Scheduler.disable_delayed_requeue_batches = batch_disabled
       Resque::Scheduler.delayed_requeue_batch_size = batch_size
     end
 

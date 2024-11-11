@@ -73,10 +73,10 @@ module Resque
         @delayed_requeue_batch_size ||= 100
       end
 
-      attr_writer :enable_delayed_requeue_batches
+      attr_writer :disable_delayed_requeue_batches
 
-      def enable_delayed_requeue_batches
-        @enable_delayed_requeue_batches ||= to_bool(environment['ENABLE_DELAYED_REQUEUE_BATCH'])
+      def disable_delayed_requeue_batches
+        @enable_delayed_requeue_batches ||= to_bool(environment['DISABLE_DELAYED_REQUEUE_BATCH'])
       end
 
       # Amount of time in seconds to sleep between polls of the delayed
